@@ -1,4 +1,4 @@
-import requests, json, concurrent.futures
+import requests, json, concurrent.futures, sys
 from tqdm import tqdm
 from datetime import datetime
 from os import system, remove
@@ -217,9 +217,9 @@ TRADES:\n\n\
 {trades}')
 				file.close()
 
-				try:
+				if sys.platform == 'win32':
 					system('cls') or None
-				except:
+				else:
 					system('clear') or None
 				
 				print(date)
