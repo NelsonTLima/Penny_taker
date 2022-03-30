@@ -6,17 +6,18 @@ from time import sleep
 main = True
 try:
 	import save_module
-	bought, success, stop_losses, buying_price, profits = save_module.save()
+	bought, success, stop_losses, buying_price, buying_time, profits, trades = save_module.save()
 except:
 	bought = False
 	success = 0
 	stop_losses = 0
 	buying_price = 0
+	buying_time = ''
 	profits = []
+	trades = {}
 
 selling_price = 0
 total_profit = 0
-trades = {}
 
 with tqdm (total=3) as bar:
 	while main == True:
@@ -25,7 +26,7 @@ with tqdm (total=3) as bar:
 		date_day = date_time.strftime('%d-%m-%Y')
 		urls = []
 		currency = 'BTCUSDT'
-		intervals = ['5m', '1h']
+		intervals = ['15m', '1h']
 		urls_dic = {}
 
 		def get_endpoint(currency, interval):
@@ -55,11 +56,11 @@ with tqdm (total=3) as bar:
 			return ask, bid
 
 		def klines_m():
-			data = response[-4:]
+			data = response[-3:]
 			return data
 
 		def klines_h():
-			data = response[-4:]
+			data = response[-5:]
 			return data
 
 		def time_in_kline(data):
@@ -216,7 +217,11 @@ TRADES:\n\n\
 {trades}')
 				file.close()
 
-				system('clear') or None
+				try:
+					system('cls') or None
+				except:
+					system('clear') or None
+				
 				print(date)
 				if bought == False:
 					print(f'\ncurrent price: {ask}\n')
@@ -257,14 +262,20 @@ TRADES:\n\n\
 				print(f'efficiency: {efficiency: .2%}\n')
 
 				save = open('save_module.py', 'w')
-				save.write(f'\
+				save.write(f"\
 def save():\n\
 	bought = {bought}\n\
-	succes = {success}\n\
+	success = {success}\n\
 	stop_losses = {stop_losses}\n\
-	buying_price = {buying_price}\n\
+	if bought == True:\n\
+		buying_price = {buying_price}\n\
+		buying_time = '{buying_time}'\n\
+	else:\n\
+		buying_time = ''\n\
 	profits = {profits}\n\
-	return bought, success, stop_losses, buying_price, profits')
+	trades = {trades}\n\
+	return bought, success, stop_losses, buying_price, buying_time, profits, trades")
+				save.close()
 
 		except Exception as exc:
 			print(exc)
