@@ -282,7 +282,7 @@ def save():\n\
 	from datetime import datetime\n\
 	date_time=datetime.now()\n\
 	today=date_time.strftime('%d-%m-%Y')\n\
-	saved_date='{date_time}'\n\
+	saved_date='{date_day}'\n\
 	bought={bought}\n\
 	if today == saved_date:\n\
 		success={success}\n\
