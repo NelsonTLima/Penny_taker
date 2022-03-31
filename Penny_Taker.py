@@ -3,9 +3,9 @@ from tqdm import tqdm
 from datetime import datetime, timedelta
 from os import system
 from time import sleep
-from save.save_module import save
 main = True
 try:
+	from save.save_module import save
 	bought, success, stop_losses, buying_price, buying_time, profits, trades = save()
 except:
 	bought = False
@@ -17,7 +17,6 @@ except:
 	trades = {}
 save_dic = {}
 selling_price = 0
-total_profit = 0
 
 with tqdm (total=3) as bar:
 	while main == True:
@@ -156,7 +155,7 @@ with tqdm (total=3) as bar:
 				
 					else:
 						ask, bid = current_price()
-	
+
 				if bought == False:
 					if candle_raise == True:
 						if volume_raise == True:
@@ -179,13 +178,13 @@ with tqdm (total=3) as bar:
 							'selling price': selling_price,
 							'profit': f'{profit: .2%}'
 						}
-						total_profit += profit
+						profits.append(profit)
 						stop_losses += 1
 						bought = False
 			# selling
 					if resistance <= buying_price*1.003:
 						if selling_price >= buying_price*1.0025:
-							total_profit += profit
+							profits.append(profit)
 							trades[f'{selling_time}'] = {
 								'buying time': buying_time,
 								'buying price': buying_price,
@@ -199,7 +198,7 @@ with tqdm (total=3) as bar:
 						if candle_raise == False:
 							if volume_raise == False:
 								if selling_price > buying_price*1.002:
-									total_profit += profit
+									profits.append(profit)
 									trades[f'{selling_time}'] = {
 										'buying time': buying_time,
 										'buying price': buying_price,
@@ -212,8 +211,10 @@ with tqdm (total=3) as bar:
 
 				if profits == []:
 					average_profit = 0
+					total_profit = 0
 				else:
-					average_profit = sum(profits/len(profits))
+					average_profit = sum(profits)/len(profits)
+					total_profit = sum(profits)
 				if trades != {}:
 					efficiency = success/(success + stop_losses)
 				else:
@@ -229,69 +230,66 @@ average profit: {average_profit: .2%}\n\
 efficiency: {efficiency: .2%}\n\n\
 TRADES:\n\n\
 {trades}')
-				file.close()
+			file.close()
 
-				if sys.platform == 'win32':
-					system('cls') or None
-				else:
-					system('clear') or None
-				
-				print(date)
-				if bought == False:
-					print(f'\ncurrent price: {ask}\n')
-				else:
-					print(f'\ncurrent price: {bid}\n')
-					print(f'Bought for: {buying_price: .2f}')
-					print(f'Operation profit: {profit: .2%}\n')
-					print(f'lower selling price: {buying_price*1.002: .2f}')
-				print(f'resistance: {resistance: .2f}')
-				print(f'Buying zone end: {buying_zone_end: .2f}')
-				print(f'Buying zone start: {buying_zone_start: .2f}')
-				print(f'stop loss: {stop_loss: .2f}')
-				print('\nSTATUS:\n')
-				
-				if bought == True:
-					print('BOUGHT')
-				else:
-					print('SOLD')
-				if candle_raise == False:
-					print('price is reducing')
-				else:
-					print('price is raising')
-				if volume_raise == False:
-					print('buying volume is lower')
-				else:
-					print('buying volume is higher')
-				if selling_price < buying_price*1.002:
-					print('Price is lower than selling threshold')
-				if bought == False:
-					if ask < buying_zone_start:
-						print('price is lower than buying threshold')
-					elif ask > buying_zone_end:
-						print('price is higher than buying threshold')
+			if sys.platform == 'win32':
+				system('cls') or None
+			else:
+				system('clear') or None
+			
+			print(date)
+			if bought == False:
+				print(f'\ncurrent price: {ask}\n')
+			else:
+				print(f'\ncurrent price: {bid}\n')
+				print(f'Bought for: {buying_price: .2f}')
+				print(f'Operation profit: {profit: .2%}\n')
+				print(f'lower selling price: {buying_price*1.002: .2f}')
+			print(f'resistance: {resistance: .2f}')
+			print(f'Buying zone end: {buying_zone_end: .2f}')
+			print(f'Buying zone start: {buying_zone_start: .2f}')
+			print(f'stop loss: {stop_loss: .2f}')
+			print('\nSTATUS:\n')
+			
+			if bought == True:
+				print('BOUGHT')
+			else:
+				print('SOLD')
+			if candle_raise == False:
+				print('price is reducing')
+			else:
+				print('price is raising')
+			if volume_raise == False:
+				print('buying volume is lower')
+			else:
+				print('buying volume is higher')
+			if selling_price < buying_price*1.002:
+				print('Price is lower than selling threshold')
+			if bought == False:
+				if ask < buying_zone_start:
+					print('price is lower than buying threshold')
+				elif ask > buying_zone_end:
+					print('price is higher than buying threshold')
 
-				print(f'\nsuccess: {success} times')
-				print(f'stop losses: {stop_losses} times')
-				print(f'total profit: {total_profit: .2%}')
-				print(f'average profit: {average_profit: .2%}')
-				print(f'efficiency: {efficiency: .2%}\n')
+			print(f'\nsuccess: {success} times')
+			print(f'stop losses: {stop_losses} times')
+			print(f'total profit: {total_profit: .2%}')
+			print(f'average profit: {average_profit: .2%}')
+			print(f'efficiency: {efficiency: .2%}\n')
 
-				save = open('save/save_module.py', 'w')
-				save.write(f"\
+			save = open('save/save_module.py', 'w')
+			save.write(f"\
 def save():\n\
 	from datetime import datetime\n\
 	date_time=datetime.now()\n\
 	today=date_time.strftime('%d-%m-%Y')\n\
 	saved_date='{date_day}'\n\
 	bought={bought}\n\
+	buying_price={buying_price}\n\
+	buying_time='{buying_time}'\n\
 	if today == saved_date:\n\
 		success={success}\n\
 		stop_losses={stop_losses}\n\
-		if bought == True:\n\
-			buying_price={buying_price}\n\
-			buying_time='{buying_time}'\n\
-		else:\n\
-			buying_time=''\n\
 		profits={profits}\n\
 		trades={trades}\n\
 	else:\n\
@@ -302,7 +300,7 @@ def save():\n\
 		profits=[]\n\
 		trades={save_dic}\n\
 	return bought, success, stop_losses, buying_price, buying_time, profits, trades")
-				save.close()
+			save.close()
 
 		except Exception as exc:
 			print(exc)

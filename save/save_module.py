@@ -4,14 +4,11 @@ def save():
 	today=date_time.strftime('%d-%m-%Y')
 	saved_date='31-03-2022'
 	bought=False
+	buying_price=0
+	buying_time=''
 	if today == saved_date:
 		success=0
 		stop_losses=0
-		if bought == True:
-			buying_price=0
-			buying_time=''
-		else:
-			buying_time=''
 		profits=[]
 		trades={}
 	else:
