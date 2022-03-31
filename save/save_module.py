@@ -2,7 +2,7 @@ def save():
 	from datetime import datetime
 	date_time=datetime.now()
 	today=date_time.strftime('%d-%m-%Y')
-	saved_date='2022-03-31 01:49:07.079371'
+	saved_date='31-03-2022'
 	bought=False
 	if today == saved_date:
 		success=0
