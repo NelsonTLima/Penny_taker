@@ -244,7 +244,7 @@ TRADES:\n\n\
 					print(f'Bought for: {buying_price: .2f}')
 					print(f'Operation profit: {profit: .2%}\n')
 					print(f'lower selling price: {buying_price*1.002: .2f}')
-				print(f'resistance: {resistance}')
+				print(f'resistance: {resistance: .2f}')
 				print(f'Buying zone end: {buying_zone_end: .2f}')
 				print(f'Buying zone start: {buying_zone_start: .2f}')
 				print(f'stop loss: {stop_loss: .2f}')
