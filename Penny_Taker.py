@@ -1,12 +1,12 @@
 import requests, json, concurrent.futures, sys
 from tqdm import tqdm
 from datetime import datetime, timedelta
-from os import system, remove
+from os import system
 from time import sleep
+from save.save_module import save
 main = True
 try:
-	import save_module
-	bought, success, stop_losses, buying_price, buying_time, profits, trades = save_module.save()
+	bought, success, stop_losses, buying_price, buying_time, profits, trades = save()
 except:
 	bought = False
 	success = 0
