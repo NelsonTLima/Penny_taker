@@ -2,24 +2,26 @@ import requests, json, concurrent.futures, sys
 from tqdm import tqdm
 from datetime import datetime, timedelta
 from os import system
-from time import sleep
 main = True
-try:
-	from save.save_module import save
-	bought, success, stop_losses, buying_price, buying_time, profits, trades = save()
-except:
-	bought = False
-	success = 0
-	stop_losses = 0
-	buying_price = 0
-	buying_time = ''
-	profits = []
-	trades = {}
-save_dic = {}
+
+bought = False
+success = 0
+stop_losses = 0
+buying_price = 0
 selling_price = 0
+buying_time = ''
+profits = []
+trades = {}
+save_dic = {}
 
 with tqdm (total=3) as bar:
 	while main == True:
+
+		try:
+			from save.save_module import save
+			bought, success, stop_losses, buying_price, buying_time, profits, trades = save()
+		except:pass
+
 		date_time = datetime.now()
 		date = date_time.strftime('%d/%m/%Y - %H:%M:%S')
 		date_day = date_time.strftime('%d-%m-%Y')
@@ -280,8 +282,8 @@ TRADES:\n\n\
 			save = open('save/save_module.py', 'w')
 			save.write(f"\
 def save():\n\
-	from datetime import datetime, timedelta\n\
-	date_time=datetime.now() - timedelta(seconds = 5)\n\
+	from datetime import datetime\n\
+	date_time=datetime.now()\n\
 	today=date_time.strftime('%d-%m-%Y')\n\
 	saved_date='{date_day}'\n\
 	bought={bought}\n\
