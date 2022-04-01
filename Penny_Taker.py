@@ -280,8 +280,8 @@ TRADES:\n\n\
 			save = open('save/save_module.py', 'w')
 			save.write(f"\
 def save():\n\
-	from datetime import datetime\n\
-	date_time=datetime.now()\n\
+	from datetime import datetime, timedelta\n\
+	date_time=datetime.now() - timedelta(seconds = 5)\n\
 	today=date_time.strftime('%d-%m-%Y')\n\
 	saved_date='{date_day}'\n\
 	bought={bought}\n\
